@@ -1,0 +1,15 @@
+# A release whose health check can never pass (nginx answers 404 on /nope).
+# Used to prove automatic rollback of an unconfirmed release.
+name: nginx-fw
+version: "3"
+health:
+  http: http://127.0.0.1:80/nope
+  interval: 1s
+  timeout: 500ms
+  grace: 2s
+  failure_threshold: 2
+  restart_backoff: 1s
+rollback:
+  on_unhealthy_for: 3s
+ready:
+  listen: ":9100"
