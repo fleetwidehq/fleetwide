@@ -2,10 +2,11 @@
 
 ## Reporting a vulnerability
 
-Email **info@cloud2scale.com** with "security" in the subject: a description, the affected component
-(supervisor, CLI, console, proxy) and steps to reproduce. Do not open a public
-issue for a vulnerability. If GitHub private vulnerability reporting is
-enabled on this repository, you may use it instead.
+Use **Report a vulnerability** on this repository's Security tab (GitHub
+private vulnerability reporting), or email **info@cloud2scale.com** with
+"security" in the subject. Include a description, the affected component
+(supervisor, CLI, console, proxy) and steps to reproduce. Do not open a
+public issue for a vulnerability.
 
 You will get an acknowledgement within two business days and a fix or a
 mitigation plan within thirty. We credit reporters in the release notes
