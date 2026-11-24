@@ -1,0 +1,9 @@
+# Console-supplied manifest for an unmodified upstream image (no rebuild).
+name: redis-upstream
+health:
+  tcp: 127.0.0.1:6379
+  interval: 2s
+  timeout: 1s
+  grace: 3s
+ready:
+  listen: ":9100"

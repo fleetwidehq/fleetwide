@@ -1,0 +1,15 @@
+name: flaky
+version: "1"
+health:
+  http: http://127.0.0.1:8080/healthz
+  interval: 1s
+  timeout: 500ms
+  grace: 2s
+  failure_threshold: 2
+  restart_backoff: 1s
+  max_restarts: 3
+  stop_timeout: 5s
+rollback:
+  on_unhealthy_for: 3s
+ready:
+  listen: ":9100"

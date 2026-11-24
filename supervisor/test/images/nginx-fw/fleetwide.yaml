@@ -1,0 +1,17 @@
+name: nginx-fw
+version: "1"
+health:
+  http: http://127.0.0.1:80/
+  interval: 2s
+  timeout: 1s
+  grace: 3s
+  failure_threshold: 2
+  restart_backoff: 1s
+rollback:
+  on_unhealthy_for: 4s
+ready:
+  listen: ":9100"
+update:
+  strategy: reload
+  reload_signal: SIGHUP
+  config_paths: ["/etc/nginx/**"]
