@@ -1,0 +1,30 @@
+# The fleetwide CLI as a container, for CI runners and build hosts with no Go
+# toolchain. It ships the docker client so `--dockerfile` and `--local-image`
+# work when you mount the daemon socket; `--image` needs neither.
+#
+#   docker run --rm -v "$HOME/.docker:/root/.docker:ro" \
+#     -e FLEETWIDE_CONSOLE -e FLEETWIDE_API_KEY \
+#     public.ecr.aws/fleetwide/cli:1 embed --app my-app …
+#
+# Build from the repo root:
+#   docker build -f supervisor/Dockerfile.cli -t fleetwide/cli:dev .
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS build
+WORKDIR /src
+ENV GOWORK=off
+COPY api/ api/
+COPY supervisor/go.mod supervisor/go.sum supervisor/
+RUN cd supervisor && go mod download
+COPY supervisor/ supervisor/
+ARG TARGETOS TARGETARCH
+ARG VERSION=dev
+ARG SUPERVISOR_REGISTRY=public.ecr.aws/fleetwide
+RUN cd supervisor && CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -trimpath -ldflags="-s -w \
+      -X github.com/fleetwidehq/fleetwide/supervisor/internal/buildinfo.Version=$VERSION \
+      -X github.com/fleetwidehq/fleetwide/supervisor/internal/buildinfo.Registry=$SUPERVISOR_REGISTRY" \
+    -o /out/fleetwide ./cmd/fleetwide
+
+FROM alpine:3.22
+RUN apk add --no-cache ca-certificates docker-cli
+COPY --from=build /out/fleetwide /usr/local/bin/fleetwide
+ENTRYPOINT ["/usr/local/bin/fleetwide"]

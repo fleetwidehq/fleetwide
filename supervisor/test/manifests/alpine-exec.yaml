@@ -1,0 +1,11 @@
+name: alpine-exec
+health:
+  exec: ["test", "-f", "/tmp/ok"]
+  interval: 1s
+  timeout: 500ms
+  grace: 1s
+  failure_threshold: 2
+rollback:
+  on_unhealthy_for: 2s
+ready:
+  listen: ":9100"
